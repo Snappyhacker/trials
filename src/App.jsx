@@ -6,7 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./components/store";
+import store from "./components/store";
 import LandingPage from "./components/LandingPage";
 import AuthScreen from "./components/AuthScreen";
 import AboutUs from "./components/AboutUs";

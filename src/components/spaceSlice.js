@@ -1,30 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-type SpaceType =
-  | "teamBuilding"
-  | "workout"
-  | "garden"
-  | "library"
-  | "photography"
-  | "townHouse";
-
-interface FormData {
-  name: string;
-  type: SpaceType;
-  description: string;
-  price: string;
-  address: string;
-  image: File | null;
-}
-
-interface SpaceState {
-  formData: FormData;
-  errors: Partial<FormData>;
-  isSubmitting: boolean;
-  submitMessage: string;
-}
-
-const initialState: SpaceState = {
+const initialState = {
   formData: {
     name: "",
     type: "teamBuilding",
@@ -42,16 +18,16 @@ const spaceSlice = createSlice({
   name: "space",
   initialState,
   reducers: {
-    updateFormData: (state, action: PayloadAction<Partial<FormData>>) => {
+    updateFormData: (state, action) => {
       state.formData = { ...state.formData, ...action.payload };
     },
-    setErrors: (state, action: PayloadAction<Partial<FormData>>) => {
+    setErrors: (state, action) => {
       state.errors = action.payload;
     },
-    setIsSubmitting: (state, action: PayloadAction<boolean>) => {
+    setIsSubmitting: (state, action) => {
       state.isSubmitting = action.payload;
     },
-    setSubmitMessage: (state, action: PayloadAction<string>) => {
+    setSubmitMessage: (state, action) => {
       state.submitMessage = action.payload;
     },
     resetForm: (state) => {
@@ -70,4 +46,5 @@ export const {
   setSubmitMessage,
   resetForm,
 } = spaceSlice.actions;
+
 export default spaceSlice.reducer;

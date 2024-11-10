@@ -10,17 +10,8 @@ import {
   setSubmitMessage,
   resetForm,
 } from "./spaceSlice";
-import { RootState } from "./store"; // Assuming you have a store.ts file
 
-type SpaceType =
-  | "teamBuilding"
-  | "workout"
-  | "garden"
-  | "library"
-  | "photography"
-  | "townHouse";
-
-const spaceTypes: { [key in SpaceType]: string } = {
+const spaceTypes = {
   teamBuilding: "Team Building",
   workout: "Workout",
   garden: "Garden",
@@ -32,28 +23,24 @@ const spaceTypes: { [key in SpaceType]: string } = {
 export default function AddYourSpace() {
   const dispatch = useDispatch();
   const { formData, errors, isSubmitting, submitMessage } = useSelector(
-    (state: RootState) => state.space,
+    (state) => state.space
   );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     dispatch(updateFormData({ [name]: value }));
     dispatch(setErrors({ [name]: "" }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       dispatch(updateFormData({ image: e.target.files[0] }));
       dispatch(setErrors({ image: "" }));
     }
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<typeof formData> = {};
+  const validateForm = () => {
+    const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
@@ -66,7 +53,7 @@ export default function AddYourSpace() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -95,15 +82,15 @@ export default function AddYourSpace() {
         const errorData = await response.json();
         dispatch(
           setSubmitMessage(
-            `Error: ${errorData.message || "Failed to add space"}`,
-          ),
+            `Error: ${errorData.message || "Failed to add space"}`
+          )
         );
       }
     } catch (error) {
       dispatch(
         setSubmitMessage(
-          "An error occurred while adding your space. Please try again.",
-        ),
+          "An error occurred while adding your space. Please try again."
+        )
       );
     } finally {
       dispatch(setIsSubmitting(false));
@@ -271,17 +258,27 @@ export default function AddYourSpace() {
 
           {submitMessage && (
             <div
-              className={`mt-4 p-4 rounded-md ${submitMessage.startsWith("Error") ? "bg-red-50" : "bg-green-50"}`}
+              className={`mt-4 p-4 rounded-md ${
+                submitMessage.startsWith("Error") ? "bg-red-50" : "bg-green-50"
+              }`}
             >
               <div className="flex">
                 <div className="flex-shrink-0">
                   <AlertCircle
-                    className={`h-5 w-5 ${submitMessage.startsWith("Error") ? "text-red-400" : "text-green-400"}`}
+                    className={`h-5 w-5 ${
+                      submitMessage.startsWith("Error")
+                        ? "text-red-400"
+                        : "text-green-400"
+                    }`}
                   />
                 </div>
                 <div className="ml-3">
                   <p
-                    className={`text-sm font-medium ${submitMessage.startsWith("Error") ? "text-red-800" : "text-green-800"}`}
+                    className={`text-sm font-medium ${
+                      submitMessage.startsWith("Error")
+                        ? "text-red-800"
+                        : "text-green-800"
+                    }`}
                   >
                     {submitMessage}
                   </p>

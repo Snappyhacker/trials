@@ -2,26 +2,11 @@ import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Define types for our forms and API responses
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
-interface SignupForm extends LoginForm {
-  name: string;
-  role_id: number;
-}
-
-interface AuthResponse {
-  token: string;
-}
-
 export default function AuthScreen() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState<LoginForm & { name?: string }>({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
@@ -34,9 +19,9 @@ export default function AuthScreen() {
     "/src/assets/spacesImages/librarySpaces/novelNook.JPG",
   ];
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -45,17 +30,16 @@ export default function AuthScreen() {
     setError(null);
   };
 
-  const saveToken = (token: string) => {
+  const saveToken = (token) => {
     localStorage.setItem("authToken", token);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
       if (isLogin) {
-        // Handle Login
         const response = await fetch("http://127.0.0.1:5000/auth/login", {
           method: "POST",
           headers: {
@@ -71,14 +55,11 @@ export default function AuthScreen() {
           throw new Error("Login failed. Please check your credentials.");
         }
 
-        const data: AuthResponse = await response.json();
+        const data = await response.json();
         saveToken(data.token);
-
-        // Redirect to findYourPlace after successful login
         navigate("/findYourPlace");
       } else {
-        // Handle Signup
-        const signupData: SignupForm = {
+        const signupData = {
           email: formData.email,
           password: formData.password,
           name: formData.name || "",
@@ -97,10 +78,8 @@ export default function AuthScreen() {
           throw new Error("Signup failed. Please try again.");
         }
 
-        const data: AuthResponse = await response.json();
+        const data = await response.json();
         saveToken(data.token);
-
-        // Switch to login view after successful signup
         setIsLogin(true);
         setFormData({
           email: "",
@@ -109,22 +88,19 @@ export default function AuthScreen() {
         });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err.message || "An error occurred");
       console.error("Auth error:", err);
     }
   };
 
   const handleGoogleSignIn = () => {
-    // Implement Google Sign-In logic here
     console.log("Google Sign-In clicked");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Main Content */}
       <div className="flex-grow flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg relative overflow-hidden">
-          {/* Background Image */}
           <div
             className="absolute inset-0 bg-cover bg-center opacity-10 z-0"
             style={{
@@ -132,7 +108,6 @@ export default function AuthScreen() {
             }}
           ></div>
 
-          {/* Content */}
           <div className="relative z-10">
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               {isLogin ? "Sign in to your account" : "Create your account"}
@@ -155,6 +130,8 @@ export default function AuthScreen() {
                         name="name"
                         type="text"
                         required
+                        value={formData.name}
+                        onChange={handleInputChange}
                         className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                         placeholder="Name"
                       />
@@ -178,7 +155,11 @@ export default function AuthScreen() {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${isLogin ? "rounded-t-md" : ""} focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${
+                        isLogin ? "rounded-t-md" : ""
+                      } focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                       placeholder="Email address"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -200,6 +181,8 @@ export default function AuthScreen() {
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       required
+                      value={formData.password}
+                      onChange={handleInputChange}
                       className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                       placeholder="Password"
                     />
@@ -295,7 +278,7 @@ export default function AuthScreen() {
                       fill="#34A853"
                     />
                     <path
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18c-.75 1.48-1.18 3.15-1.18 4.93s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
                       fill="#FBBC05"
                     />
                     <path
@@ -311,9 +294,7 @@ export default function AuthScreen() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                {isLogin
-                  ? "Don't have an account?"
-                  : "Already have an account?"}{" "}
+                {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
                 <button
                   className="font-medium text-blue-600 hover:text-blue-500"
                   onClick={() => setIsLogin(!isLogin)}
@@ -326,7 +307,6 @@ export default function AuthScreen() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-gray-800 py-8 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">

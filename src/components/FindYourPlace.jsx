@@ -1,24 +1,7 @@
 import React, { useState } from "react";
 import { Search, Filter } from "lucide-react";
 
-type SpaceType =
-  | "teamBuilding"
-  | "workout"
-  | "garden"
-  | "library"
-  | "photography"
-  | "townHouse";
-
-interface Space {
-  id: number;
-  name: string;
-  type: SpaceType;
-  image: string;
-  price: number;
-  rating: number;
-}
-
-const spaceTypes: { [key in SpaceType]: string } = {
+const spaceTypes = {
   teamBuilding: "Team Building",
   workout: "Workout",
   garden: "Garden",
@@ -27,7 +10,7 @@ const spaceTypes: { [key in SpaceType]: string } = {
   townHouse: "Town House",
 };
 
-const spaces: Space[] = [
+const spaces = [
   {
     id: 1,
     name: "Crew Corner",
@@ -76,11 +59,10 @@ const spaces: Space[] = [
     price: 100,
     rating: 4.9,
   },
-  // Add more spaces as needed
 ];
 
 export default function FindYourPlace() {
-  const [selectedTypes, setSelectedTypes] = useState<SpaceType[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const spacesPerPage = 6;
@@ -88,21 +70,21 @@ export default function FindYourPlace() {
   const filteredSpaces = spaces.filter(
     (space) =>
       (selectedTypes.length === 0 || selectedTypes.includes(space.type)) &&
-      space.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      space.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastSpace = currentPage * spacesPerPage;
   const indexOfFirstSpace = indexOfLastSpace - spacesPerPage;
   const currentSpaces = filteredSpaces.slice(
     indexOfFirstSpace,
-    indexOfLastSpace,
+    indexOfLastSpace
   );
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const toggleSpaceType = (type: SpaceType) => {
+  const toggleSpaceType = (type) => {
     setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
@@ -144,9 +126,9 @@ export default function FindYourPlace() {
                 {Object.entries(spaceTypes).map(([key, value]) => (
                   <button
                     key={key}
-                    onClick={() => toggleSpaceType(key as SpaceType)}
+                    onClick={() => toggleSpaceType(key)}
                     className={`px-3 py-1 rounded-full text-sm ${
-                      selectedTypes.includes(key as SpaceType)
+                      selectedTypes.includes(key)
                         ? "bg-gray-800 text-white"
                         : "bg-gray-200 text-gray-800"
                     }`}
@@ -204,7 +186,7 @@ export default function FindYourPlace() {
                 >
                   {i + 1}
                 </button>
-              ),
+              )
             )}
           </div>
         )}

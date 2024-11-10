@@ -13,7 +13,7 @@ export default function SpacerLandingPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
-        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1,
+        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000);
 
@@ -56,6 +56,7 @@ export default function SpacerLandingPage() {
           </div>
         </div>
       </div>
+      
       {/* Features Section */}
       <div className="py-16 px-4 max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold mb-8 text-gray-800">Features</h2>
@@ -86,6 +87,7 @@ export default function SpacerLandingPage() {
           </div>
         </div>
       </div>
+      
       {/* Footer */}
       <footer className="bg-gray-800 py-8 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
